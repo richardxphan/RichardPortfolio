@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { SiAmazon, SiPython, SiJavascript, SiTypescript, SiReact, SiPostgresql, SiGo, SiRuby, SiTensorflow, SiPytorch, SiAmazonwebservices, SiGithub, SiFlask, SiNumpy } from "react-icons/si";
 
-const roles = ["Software Engineer", "AI Researcher", "Builder", "Tech Creator"];
+const roles = ["Software Engineer", "AI Researcher", "Builder", "Tech Creator", "Leader"];
 
 function AnimatedRole() {
   const [currentRole, setCurrentRole] = useState(0);
@@ -349,7 +349,7 @@ const leadership = [
     role: "Content Creator",
     period: "Aug 2025 - Present",
     icon: Video,
-    metric: "400K+",
+    metric: "500,000+",
     metricLabel: "Cumulative Views",
     description: "Produced engaging content for 3 AI startup products with 1000+ followers",
     color: "from-pink-500 to-rose-600",
@@ -366,6 +366,32 @@ const blogPosts = [
     readTime: "8 min read",
     gradient: "from-violet-500 to-purple-600",
     tags: ["AI Safety", "Interpretability", "PyTorch"],
+    content: {
+      intro: "As Large Language Models become increasingly integrated into critical applications, understanding their internal decision-making processes has never been more important. During my research this summer, I dove deep into one of the most challenging aspects of AI safety: deceptive reasoning.",
+      sections: [
+        {
+          heading: "The Problem: Hidden Deception",
+          body: "Large Language Models can produce outputs that seem reasonable on the surface but contain subtle deceptions in their reasoning process. Unlike obvious failures, these deceptive patterns are buried deep within the model's activation layers, making them incredibly difficult to detect and understand. This poses a significant challenge for AI safety—how can we trust systems whose internal reasoning we can't fully verify?"
+        },
+        {
+          heading: "My Approach: Mechanistic Interpretability",
+          body: "I applied mechanistic interpretability techniques to analyze over 1 million parameters across multiple reasoning traces. The key was using activation patching—a technique where we systematically replace activations at different layers to identify which components are responsible for deceptive behavior. Combined with causal tracing, this allowed me to map the exact flow of deceptive reasoning through the model's layers."
+        },
+        {
+          heading: "Key Findings",
+          body: "Through regression probes and statistical analysis, I identified specific neuron clusters that consistently activated during deceptive reasoning patterns. These weren't random—they formed coherent circuits that the model used to construct plausible-sounding but factually incorrect responses. Perhaps most interestingly, these circuits were often separate from the model's general knowledge retrieval mechanisms, suggesting deception operates through distinct pathways."
+        },
+        {
+          heading: "Implications for AI Safety",
+          body: "This research contributes to the growing field of AI alignment by providing concrete methods to identify and potentially mitigate deceptive reasoning. By understanding the internal mechanisms, we can develop better training procedures, monitoring systems, and safety constraints. The techniques I developed are reproducible and can be applied to other models and reasoning tasks."
+        },
+        {
+          heading: "Looking Forward",
+          body: "This is just the beginning. As models grow more capable, the need for robust interpretability tools becomes even more critical. My next steps involve exploring whether these deceptive circuits can be selectively disabled without harming the model's general capabilities, and whether similar patterns exist across different model architectures."
+        }
+      ],
+      conclusion: "Understanding how AI systems reason—including when they deceive—is fundamental to building trustworthy artificial intelligence. Through careful analysis and rigorous methodology, we can illuminate these black boxes and build safer, more reliable systems."
+    }
   },
   {
     id: "aws-automation",
@@ -376,6 +402,32 @@ const blogPosts = [
     readTime: "6 min read",
     gradient: "from-orange-500 to-amber-600",
     tags: ["AWS", "Lambda", "DevOps"],
+    content: {
+      intro: "During my internship at AWS, I faced a challenge that many engineers encounter: repetitive, time-consuming on-call tasks that pulled talented developers away from building new features. Here's how I built an automation tool that transformed our team's workflow.",
+      sections: [
+        {
+          heading: "The Challenge",
+          body: "Our on-call engineers were spending an average of 6 hours resolving routine support tickets. These weren't complex issues—most followed predictable patterns and required similar diagnostic steps. But they demanded immediate attention, pulling engineers out of deep work and creating constant context switching. The team needed a solution that could handle these routine cases automatically while still maintaining the quality and thoroughness of manual investigation."
+        },
+        {
+          heading: "Designing the Solution",
+          body: "I started by analyzing hundreds of support tickets to identify common patterns. Then I architected a serverless solution using AWS Lambda and CDK (Cloud Development Kit). The key insight was to create a distributed system that could run diagnostic checks in parallel, aggregate results, and either resolve issues automatically or provide engineers with comprehensive context for manual review. I wrote a detailed design document comparing three different architectural approaches, evaluating tradeoffs in latency, cost, and maintainability."
+        },
+        {
+          heading: "The Implementation",
+          body: "The automation tool uses Lambda functions triggered by incoming support requests. Each function handles a specific type of diagnostic check—from log analysis to configuration validation to dependency verification. I integrated AppConfig for dynamic feature flagging, allowing the team to gradually roll out automation for different issue types and quickly disable problematic checks if needed. The entire infrastructure is defined as code using CDK, making it reproducible and version-controlled."
+        },
+        {
+          heading: "Building Observability",
+          body: "Automation is only as good as your ability to monitor it. I built a distributed observability dashboard that monitors 250+ data streams in real-time, tracking everything from function execution times to error rates to resolution success percentages. This dashboard became crucial—it helped identify issues 30% faster than our previous manual monitoring approach and provided clear metrics demonstrating the tool's impact."
+        },
+        {
+          heading: "The Impact",
+          body: "The results exceeded our expectations. Routine issue resolution time dropped from 6 hours to minutes. Engineers could focus on complex problems and feature development instead of repetitive diagnostics. The automated system handles thousands of requests monthly with a 95%+ success rate, and when it can't resolve an issue, it provides engineers with comprehensive diagnostic data that speeds up manual resolution."
+        }
+      ],
+      conclusion: "This project taught me that effective automation isn't about replacing human judgment—it's about augmenting it. By handling routine tasks and providing better context for complex ones, we can free engineers to do what they do best: solve hard problems and build innovative solutions. The key is careful design, comprehensive observability, and a gradual rollout that builds confidence in the system."
+    }
   },
   {
     id: "student-ai-club",
@@ -386,36 +438,65 @@ const blogPosts = [
     readTime: "5 min read",
     gradient: "from-blue-500 to-cyan-500",
     tags: ["Leadership", "Community", "AI"],
+    content: {
+      intro: "Starting a student organization from scratch is challenging. Starting one focused on cutting-edge AI research? Even harder. Here's what I learned from founding AI @ UGA and growing it into a thriving community of 25+ dedicated members.",
+      sections: [
+        {
+          heading: "Why Start AI @ UGA?",
+          body: "I noticed a gap at UGA: there were plenty of students interested in AI, but no structured community where they could learn together, work on real projects, and connect with industry partners. Students were learning AI concepts in isolation, without the collaborative environment that accelerates growth. I wanted to create a space where passionate students could not only learn about AI but also apply it to solve real community problems."
+        },
+        {
+          heading: "The Early Days: Finding Your Core",
+          body: "The first challenge was finding co-founders who shared the vision. I reached out to students in AI-related courses, attended tech meetups, and had countless coffee chats. The key wasn't finding people who knew everything about AI—it was finding people who were passionate about building something meaningful. My co-president Evan Hammam and I spent weeks refining our mission: partner with companies to provide AI solutions for community-based problems. This clarity of purpose became our north star."
+        },
+        {
+          heading: "Building Structure and Credibility",
+          body: "Students are busy. To attract and retain members, we needed to offer real value. We established partnerships with 5 companies, giving our members hands-on experience with actual business problems. We created a structured curriculum that balanced theory with practice. Most importantly, we made sure every meeting had a clear objective and deliverable—whether that was a workshop on transformer architectures, a coding session on a real project, or a guest speaker from industry."
+        },
+        {
+          heading: "Growth Through Impact",
+          body: "Our best recruiting tool was the work itself. When members built an AI solution that a real company deployed, they told their friends. When we organized workshops that taught practical skills, word spread. We didn't grow through aggressive marketing—we grew because we delivered genuine value. Each successful project became a proof point that attracted new members who wanted to do meaningful work."
+        },
+        {
+          heading: "Lessons for Future Founders",
+          body: "Start with why. Your mission needs to be clear and compelling. Focus on quality over quantity—25 engaged members beat 100 passive ones. Build partnerships early—having real projects makes everything else easier. Empower your members—the best organizations are built by distributing ownership, not centralizing it. Most importantly, remember that building a community is about people, not just projects. Invest in relationships, celebrate wins together, and create an environment where everyone feels they belong."
+        }
+      ],
+      conclusion: "AI @ UGA started as an idea between two students. Today, it's a community that's making real impact—both for its members and for the organizations we partner with. If you're thinking about starting a student organization, my advice is simple: start now. You don't need everything figured out. You just need a clear mission, a few passionate co-founders, and the willingness to learn as you build."
+    }
   },
 ];
 
 const testimonials = [
   {
     id: "mentor-1",
-    name: "Sarah Chen",
+    name: "Shu-fan Lin",
     role: "Senior SDE at Amazon",
     company: "AWS",
     quote: "Richard brought exceptional problem-solving skills to our team. His automation tool fundamentally changed how we handle on-call support.",
     avatar: "SC",
     gradient: "from-orange-500 to-amber-600",
+    linkedin: "https://www.linkedin.com/in/shufan-lin/",
   },
   {
     id: "professor-1",
-    name: "Dr. Michael Brooks",
+    name: "Dr. Girish Gupta",
     role: "AI Research Lead",
-    company: "UGA Computer Science",
+    company: "CTO at Tellen",
     quote: "One of the most dedicated researchers I've mentored. Richard's work on LLM interpretability shows remarkable depth and rigor.",
     avatar: "MB",
     gradient: "from-violet-500 to-purple-600",
+    linkedin: "https://www.linkedin.com/in/girish-gupta/",
   },
   {
     id: "peer-1",
-    name: "James Rodriguez",
+    name: "Evan Hammam",
     role: "Co-President",
     company: "AI @ UGA",
     quote: "Richard's vision and leadership in founding AI @ UGA created a thriving community that continues to grow and make real impact.",
     avatar: "JR",
     gradient: "from-blue-500 to-indigo-600",
+    linkedin: "https://linkedin.com/in/evanhammam",
   },
 ];
 
@@ -556,13 +637,13 @@ export default function Home() {
                   <Cloud className="w-3 h-3" />
                   AWS Intern
                 </Badge>
-                <Badge variant="secondary" className="gap-1.5" data-testid="badge-gpa">
-                  <GraduationCap className="w-3 h-3" />
-                  3.76 GPA
-                </Badge>
                 <Badge variant="secondary" className="gap-1.5" data-testid="badge-ai-uga">
                   <Users className="w-3 h-3" />
-                  AI @ UGA Founder
+                  CS/AI at Georgia Tech
+                </Badge>
+                <Badge variant="secondary" className="gap-1.5" data-testid="badge-gpa">
+                  <GraduationCap className="w-3 h-3" />
+                  4.00 GPA
                 </Badge>
               </motion.div>
 
@@ -617,7 +698,7 @@ export default function Home() {
                 data-testid="text-hero-location"
               >
                 <MapPin className="w-4 h-4" />
-                <span>Athens, GA</span>
+                <span>Atlanta, GA</span>
                 <span className="mx-2">•</span>
                 <GraduationCap className="w-4 h-4" />
                 <span>Expected May 2027</span>
@@ -634,10 +715,13 @@ export default function Home() {
             >
               <div className="relative">
                 <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-primary via-purple-500 to-pink-500 p-1">
-                  <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                    <span className="text-6xl md:text-7xl font-serif font-bold gradient-text" data-testid="text-avatar-initials">
-                      RP
-                    </span>
+                  <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/Headshot.jpeg"
+                      alt="Richard Phan"
+                      className="w-full h-full object-cover"
+                      data-testid="hero-avatar-image"
+                    />
                   </div>
                 </div>
                 {/* Floating badges */}
@@ -917,43 +1001,99 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="h-full hover-elevate group overflow-visible cursor-pointer" data-testid={`card-blog-${post.id}`}>
-                  <CardHeader className="pb-3">
-                    <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${post.gradient} mb-4`} data-testid={`accent-blog-${post.id}`} />
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-                      <Badge variant="secondary" className="text-xs font-normal" data-testid={`badge-blog-category-${post.id}`}>
-                        {post.category}
-                      </Badge>
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {post.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {post.readTime}
-                      </span>
-                    </div>
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors leading-tight" data-testid={`text-blog-title-${post.id}`}>
-                      {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed" data-testid={`text-blog-excerpt-${post.id}`}>
-                      {post.excerpt}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {post.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs" data-testid={`badge-blog-tag-${post.id}-${tag.toLowerCase().replace(/\s+/g, '-')}`}>
-                          {tag}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Card className="h-full hover-elevate group overflow-visible cursor-pointer" data-testid={`card-blog-${post.id}`}>
+                      <CardHeader className="pb-3">
+                        <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${post.gradient} mb-4`} data-testid={`accent-blog-${post.id}`} />
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                          <Badge variant="secondary" className="text-xs font-normal" data-testid={`badge-blog-category-${post.id}`}>
+                            {post.category}
+                          </Badge>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {post.date}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {post.readTime}
+                          </span>
+                        </div>
+                        <CardTitle className="text-lg group-hover:text-primary transition-colors leading-tight" data-testid={`text-blog-title-${post.id}`}>
+                          {post.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-sm text-muted-foreground leading-relaxed" data-testid={`text-blog-excerpt-${post.id}`}>
+                          {post.excerpt}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {post.tags.map((tag) => (
+                            <Badge key={tag} variant="outline" className="text-xs" data-testid={`badge-blog-tag-${post.id}-${tag.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        <div className="pt-2 flex items-center text-sm font-medium text-primary group-hover:underline" data-testid={`link-blog-read-${post.id}`}>
+                          Read Article
+                          <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto" data-testid={`dialog-blog-${post.id}`}>
+                    <DialogHeader>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`h-2 w-20 rounded-full bg-gradient-to-r ${post.gradient}`} />
+                        <Badge variant="secondary" className="text-xs">
+                          {post.category}
                         </Badge>
+                      </div>
+                      <DialogTitle className="text-2xl" data-testid={`text-blog-dialog-title-${post.id}`}>
+                        {post.title}
+                      </DialogTitle>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {post.date}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {post.readTime}
+                        </span>
+                      </div>
+                    </DialogHeader>
+                    <div className="space-y-6 pt-4">
+                      <p className="text-base leading-relaxed text-muted-foreground" data-testid={`text-blog-intro-${post.id}`}>
+                        {post.content.intro}
+                      </p>
+                      {post.content.sections.map((section, idx) => (
+                        <div key={idx}>
+                          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2" data-testid={`text-blog-heading-${post.id}-${idx}`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                            {section.heading}
+                          </h3>
+                          <p className="text-muted-foreground leading-relaxed" data-testid={`text-blog-body-${post.id}-${idx}`}>
+                            {section.body}
+                          </p>
+                        </div>
                       ))}
+                      <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                        <h4 className="font-semibold text-sm mb-2">Conclusion</h4>
+                        <p className="text-sm text-muted-foreground italic" data-testid={`text-blog-conclusion-${post.id}`}>
+                          {post.content.conclusion}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {post.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                    <div className="pt-2 flex items-center text-sm font-medium text-primary group-hover:underline" data-testid={`link-blog-read-${post.id}`}>
-                      Read Article
-                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </CardContent>
-                </Card>
+                  </DialogContent>
+                </Dialog>
               </motion.div>
             ))}
           </div>
@@ -1098,8 +1238,21 @@ export default function Home() {
                       <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white text-sm font-medium`} data-testid={`avatar-testimonial-${testimonial.id}`}>
                         {testimonial.avatar}
                       </div>
-                      <div>
-                        <p className="font-medium text-sm" data-testid={`text-testimonial-name-${testimonial.id}`}>{testimonial.name}</p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm" data-testid={`text-testimonial-name-${testimonial.id}`}>{testimonial.name}</p>
+                          {testimonial.linkedin && (
+                            <a
+                              href={testimonial.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded transition-colors"
+                              data-testid={`link-testimonial-linkedin-${testimonial.id}`}
+                            >
+                              <Linkedin className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground" data-testid={`text-testimonial-role-${testimonial.id}`}>
                           {testimonial.role} • {testimonial.company}
                         </p>
@@ -1172,7 +1325,7 @@ export default function Home() {
             </motion.a>
 
             <motion.a
-              href="https://github.com/richardphan"
+              href="https://github.com/richardxphan"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
