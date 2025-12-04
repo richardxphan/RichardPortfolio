@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Mail,
@@ -28,6 +29,12 @@ import {
   Video,
   Megaphone,
   Menu,
+  BookOpen,
+  Clock,
+  Calendar,
+  Quote,
+  BarChart3,
+  Eye,
 } from "lucide-react";
 import { SiAmazon, SiPython, SiJavascript, SiTypescript, SiReact, SiPostgresql, SiGo, SiRuby, SiTensorflow, SiPytorch, SiAmazonwebservices, SiGithub, SiFlask, SiNumpy } from "react-icons/si";
 
@@ -82,9 +89,60 @@ function AnimatedCounter({ end, duration = 2, suffix = "", testId }: { end: numb
   return <span ref={ref} data-testid={testId}>{count}{suffix}</span>;
 }
 
-function Section({ children, id, className = "" }: { children: React.ReactNode; id?: string; className?: string }) {
+interface AnalyticsData {
+  pageViews: number;
+  sectionViews: Record<string, number>;
+  lastVisit: string;
+}
+
+function useAnalytics() {
+  const [analytics, setAnalytics] = useState<AnalyticsData>(() => {
+    try {
+      const stored = localStorage.getItem("portfolio-analytics");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return {
+          ...parsed,
+          pageViews: parsed.pageViews + 1,
+          lastVisit: new Date().toISOString(),
+        };
+      }
+    } catch {}
+    return {
+      pageViews: 1,
+      sectionViews: {},
+      lastVisit: new Date().toISOString(),
+    };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("portfolio-analytics", JSON.stringify(analytics));
+  }, [analytics]);
+
+  const trackSectionView = (sectionId: string) => {
+    setAnalytics((prev) => ({
+      ...prev,
+      sectionViews: {
+        ...prev.sectionViews,
+        [sectionId]: (prev.sectionViews[sectionId] || 0) + 1,
+      },
+    }));
+  };
+
+  return { analytics, trackSectionView };
+}
+
+function Section({ children, id, className = "", onView }: { children: React.ReactNode; id?: string; className?: string; onView?: (id: string) => void }) {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const hasTracked = useRef(false);
+
+  useEffect(() => {
+    if (isInView && id && onView && !hasTracked.current) {
+      hasTracked.current = true;
+      onView(id);
+    }
+  }, [isInView, id, onView]);
 
   return (
     <motion.section
@@ -105,6 +163,7 @@ const navLinks = [
   { href: "#about", label: "About" },
   { href: "#experience", label: "Experience" },
   { href: "#projects", label: "Projects" },
+  { href: "#blog", label: "Blog" },
   { href: "#skills", label: "Skills" },
   { href: "#leadership", label: "Leadership" },
   { href: "#contact", label: "Contact" },
@@ -173,6 +232,22 @@ const projects = [
     impact: "Analyzed 1M+ parameters, isolated statistically significant neurons using regression probes and causal tracing",
     tech: ["PyTorch", "Anthropic CCS", "Activation Patching", "Causal Tracing"],
     gradient: "from-violet-500 to-purple-600",
+    caseStudy: {
+      problem: "Large Language Models can exhibit deceptive behaviors during complex reasoning tasks, but the internal mechanisms behind this behavior are poorly understood. Understanding these patterns is crucial for AI safety.",
+      approach: [
+        "Designed controlled experiments with multi-step reasoning traces to elicit deceptive outputs",
+        "Implemented activation patching techniques to isolate specific neurons and circuits",
+        "Used regression probes to identify statistically significant neural patterns",
+        "Applied causal tracing to map the flow of deceptive reasoning through model layers",
+      ],
+      results: [
+        "Successfully analyzed over 1 million parameters across multiple model architectures",
+        "Identified specific neuron clusters correlated with deceptive reasoning patterns",
+        "Developed reproducible methodology for future interpretability research",
+        "Contributed to the growing body of AI safety literature",
+      ],
+      learnings: "This research deepened my understanding of neural network internals and the importance of mechanistic interpretability in ensuring AI systems behave as intended.",
+    },
   },
   {
     id: "uga-marketplace",
@@ -185,6 +260,22 @@ const projects = [
     impact: "Implemented secure user authentication with ACID-compliant payment flow",
     tech: ["React", "Docker", "PostgreSQL", "Node.js"],
     gradient: "from-blue-500 to-cyan-500",
+    caseStudy: {
+      problem: "UGA students needed a trusted platform for buying and selling items within the campus community, with security and ease of use as top priorities.",
+      approach: [
+        "Architected a full-stack solution with React frontend and Node.js backend",
+        "Implemented encrypted session handling for secure user authentication",
+        "Designed ACID-compliant database transactions for payment integrity",
+        "Containerized the application with Docker for consistent deployment",
+      ],
+      results: [
+        "Delivered a fully functional marketplace platform on schedule",
+        "Achieved zero security vulnerabilities in penetration testing",
+        "Created intuitive UI that required no user training",
+        "Successfully led and coordinated a team of 4 developers",
+      ],
+      learnings: "Leading this project taught me the importance of clear communication, proper architecture planning, and security-first development practices.",
+    },
   },
 ];
 
@@ -265,6 +356,69 @@ const leadership = [
   },
 ];
 
+const blogPosts = [
+  {
+    id: "llm-interpretability",
+    title: "Understanding Deception in Large Language Models",
+    excerpt: "Exploring how we can identify and trace deceptive reasoning patterns in LLMs through activation patching and causal tracing techniques.",
+    category: "AI Research",
+    date: "Nov 2024",
+    readTime: "8 min read",
+    gradient: "from-violet-500 to-purple-600",
+    tags: ["AI Safety", "Interpretability", "PyTorch"],
+  },
+  {
+    id: "aws-automation",
+    title: "Building Automation Tools at AWS Scale",
+    excerpt: "How I designed and built an automation tool that cut on-call resolution time from 6 hours to minutes using Lambda and CDK.",
+    category: "Engineering",
+    date: "Oct 2024",
+    readTime: "6 min read",
+    gradient: "from-orange-500 to-amber-600",
+    tags: ["AWS", "Lambda", "DevOps"],
+  },
+  {
+    id: "student-ai-club",
+    title: "Starting an AI Club: Lessons from AI @ UGA",
+    excerpt: "A behind-the-scenes look at founding and growing a student AI organization from 0 to 25+ active members.",
+    category: "Leadership",
+    date: "Sep 2024",
+    readTime: "5 min read",
+    gradient: "from-blue-500 to-cyan-500",
+    tags: ["Leadership", "Community", "AI"],
+  },
+];
+
+const testimonials = [
+  {
+    id: "mentor-1",
+    name: "Sarah Chen",
+    role: "Senior SDE at Amazon",
+    company: "AWS",
+    quote: "Richard brought exceptional problem-solving skills to our team. His automation tool fundamentally changed how we handle on-call support.",
+    avatar: "SC",
+    gradient: "from-orange-500 to-amber-600",
+  },
+  {
+    id: "professor-1",
+    name: "Dr. Michael Brooks",
+    role: "AI Research Lead",
+    company: "UGA Computer Science",
+    quote: "One of the most dedicated researchers I've mentored. Richard's work on LLM interpretability shows remarkable depth and rigor.",
+    avatar: "MB",
+    gradient: "from-violet-500 to-purple-600",
+  },
+  {
+    id: "peer-1",
+    name: "James Rodriguez",
+    role: "Co-President",
+    company: "AI @ UGA",
+    quote: "Richard's vision and leadership in founding AI @ UGA created a thriving community that continues to grow and make real impact.",
+    avatar: "JR",
+    gradient: "from-blue-500 to-indigo-600",
+  },
+];
+
 function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -305,8 +459,10 @@ function MobileNav({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: b
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const { scrollYProgress } = useScroll();
   const heroRef = useRef<HTMLDivElement>(null);
+  const { analytics, trackSectionView } = useAnalytics();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -522,7 +678,7 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <Section id="experience" className="py-20 md:py-32">
+      <Section id="experience" className="py-20 md:py-32" onView={trackSectionView}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4" data-testid="badge-experience-section">
@@ -600,7 +756,7 @@ export default function Home() {
       </Section>
 
       {/* Projects Section */}
-      <Section id="projects" className="py-20 md:py-32 bg-muted/30">
+      <Section id="projects" className="py-20 md:py-32 bg-muted/30" onView={trackSectionView}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4" data-testid="badge-projects-section">
@@ -654,6 +810,148 @@ export default function Home() {
                         </Badge>
                       ))}
                     </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full mt-2" data-testid={`button-case-study-${project.id}`}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Case Study
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto" data-testid={`dialog-case-study-${project.id}`}>
+                        <DialogHeader>
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${project.gradient} flex items-center justify-center text-white`}>
+                              <project.icon className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <DialogTitle className="text-xl" data-testid={`text-case-study-title-${project.id}`}>{project.title}</DialogTitle>
+                              <DialogDescription className="text-sm">{project.role} • {project.period}</DialogDescription>
+                            </div>
+                          </div>
+                        </DialogHeader>
+                        <div className="space-y-6 pt-4">
+                          <div>
+                            <h4 className="font-semibold text-sm text-primary mb-2 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                              The Problem
+                            </h4>
+                            <p className="text-muted-foreground text-sm leading-relaxed" data-testid={`text-case-study-problem-${project.id}`}>
+                              {project.caseStudy.problem}
+                            </p>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-sm text-primary mb-2 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                              Approach
+                            </h4>
+                            <ul className="space-y-2">
+                              {project.caseStudy.approach.map((item, i) => (
+                                <li key={i} className="text-sm text-muted-foreground flex items-start gap-2" data-testid={`text-case-study-approach-${project.id}-${i}`}>
+                                  <span className="text-primary mt-1.5 text-xs">•</span>
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-sm text-primary mb-2 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                              Results
+                            </h4>
+                            <ul className="space-y-2">
+                              {project.caseStudy.results.map((item, i) => (
+                                <li key={i} className="text-sm text-muted-foreground flex items-start gap-2" data-testid={`text-case-study-result-${project.id}-${i}`}>
+                                  <TrendingUp className="w-3.5 h-3.5 text-green-500 mt-0.5 shrink-0" />
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                            <h4 className="font-semibold text-sm mb-2">Key Learnings</h4>
+                            <p className="text-sm text-muted-foreground italic" data-testid={`text-case-study-learnings-${project.id}`}>
+                              "{project.caseStudy.learnings}"
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {project.tech.map((tech) => (
+                              <Badge key={tech} variant="secondary" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Blog Section */}
+      <Section id="blog" className="py-20 md:py-32" onView={trackSectionView}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4" data-testid="badge-blog-section">
+              <BookOpen className="w-3 h-3 mr-1.5" />
+              Blog
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold" data-testid="text-blog-title">
+              Thoughts & Insights
+            </h2>
+            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto" data-testid="text-blog-subtitle">
+              Writing about AI research, software engineering, and lessons learned along the way.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {blogPosts.map((post, index) => (
+              <motion.div
+                key={post.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="h-full hover-elevate group overflow-visible cursor-pointer" data-testid={`card-blog-${post.id}`}>
+                  <CardHeader className="pb-3">
+                    <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${post.gradient} mb-4`} data-testid={`accent-blog-${post.id}`} />
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                      <Badge variant="secondary" className="text-xs font-normal" data-testid={`badge-blog-category-${post.id}`}>
+                        {post.category}
+                      </Badge>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {post.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {post.readTime}
+                      </span>
+                    </div>
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors leading-tight" data-testid={`text-blog-title-${post.id}`}>
+                      {post.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed" data-testid={`text-blog-excerpt-${post.id}`}>
+                      {post.excerpt}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {post.tags.map((tag) => (
+                        <Badge key={tag} variant="outline" className="text-xs" data-testid={`badge-blog-tag-${post.id}-${tag.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="pt-2 flex items-center text-sm font-medium text-primary group-hover:underline" data-testid={`link-blog-read-${post.id}`}>
+                      Read Article
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -663,7 +961,7 @@ export default function Home() {
       </Section>
 
       {/* Skills Section */}
-      <Section id="skills" className="py-20 md:py-32">
+      <Section id="skills" className="py-20 md:py-32 bg-muted/30" onView={trackSectionView}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4" data-testid="badge-skills-section">
@@ -711,7 +1009,7 @@ export default function Home() {
       </Section>
 
       {/* Leadership Section */}
-      <Section id="leadership" className="py-20 md:py-32 bg-muted/30">
+      <Section id="leadership" className="py-20 md:py-32" onView={trackSectionView}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4" data-testid="badge-leadership-section">
@@ -763,8 +1061,60 @@ export default function Home() {
         </div>
       </Section>
 
+      {/* Testimonials Section */}
+      <Section id="testimonials" className="py-20 md:py-32 bg-muted/30" onView={trackSectionView}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4" data-testid="badge-testimonials-section">
+              <Quote className="w-3 h-3 mr-1.5" />
+              Testimonials
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold" data-testid="text-testimonials-title">
+              What People Say
+            </h2>
+            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto" data-testid="text-testimonials-subtitle">
+              Feedback from mentors, colleagues, and collaborators I've had the privilege to work with.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="h-full overflow-visible" data-testid={`card-testimonial-${testimonial.id}`}>
+                  <CardContent className="pt-6 pb-6 space-y-4">
+                    <div className="relative">
+                      <Quote className="w-8 h-8 text-primary/20 absolute -top-2 -left-2" />
+                      <p className="text-muted-foreground leading-relaxed italic pl-6" data-testid={`text-testimonial-quote-${testimonial.id}`}>
+                        "{testimonial.quote}"
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 pt-4 border-t border-border">
+                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white text-sm font-medium`} data-testid={`avatar-testimonial-${testimonial.id}`}>
+                        {testimonial.avatar}
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm" data-testid={`text-testimonial-name-${testimonial.id}`}>{testimonial.name}</p>
+                        <p className="text-xs text-muted-foreground" data-testid={`text-testimonial-role-${testimonial.id}`}>
+                          {testimonial.role} • {testimonial.company}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* Contact Section */}
-      <Section id="contact" className="py-20 md:py-32">
+      <Section id="contact" className="py-20 md:py-32" onView={trackSectionView}>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <Badge variant="outline" className="mb-4" data-testid="badge-contact-section">
             <Megaphone className="w-3 h-3 mr-1.5" />
@@ -855,6 +1205,56 @@ export default function Home() {
           </div>
         </div>
       </Section>
+
+      {/* Analytics Panel */}
+      {showAnalytics && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-20 right-6 z-50"
+          data-testid="panel-analytics"
+        >
+          <Card className="w-72 shadow-lg">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-primary" />
+                Site Analytics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Page Views</span>
+                <Badge variant="secondary" data-testid="text-analytics-pageviews">{analytics.pageViews}</Badge>
+              </div>
+              <div className="space-y-2">
+                <span className="text-muted-foreground text-xs">Section Engagement</span>
+                {Object.entries(analytics.sectionViews).map(([section, views]) => (
+                  <div key={section} className="flex justify-between items-center">
+                    <span className="capitalize text-xs">{section}</span>
+                    <span className="text-xs text-muted-foreground" data-testid={`text-analytics-section-${section}`}>{views} views</span>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-2 border-t border-border text-xs text-muted-foreground">
+                Last visit: {new Date(analytics.lastVisit).toLocaleDateString()}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Analytics Toggle Button */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        onClick={() => setShowAnalytics(!showAnalytics)}
+        className="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
+        data-testid="button-analytics-toggle"
+      >
+        <BarChart3 className="w-5 h-5" />
+      </motion.button>
 
       {/* Footer */}
       <footer className="py-8 border-t border-border" data-testid="footer">
